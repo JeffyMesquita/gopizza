@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 
-import { useAuth } from '@src/hooks/auth';
-
 import brandImg from '@assets/brand.png';
+
+import { useAuth } from '../../hooks/auth';
 
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';

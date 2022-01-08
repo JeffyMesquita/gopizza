@@ -17,6 +17,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 	const [isLogging, setIsLogging] = useState(false);
 
 	async function signIn(email: string, password: string) {
+		console.log('signIn entrou');
 		if (!email || !password) {
 			return Alert.alert('Login', 'Informe o email e a senha para continuar.');
 		}
@@ -26,7 +27,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 		auth()
 			.signInWithEmailAndPassword(email, password)
 			.then((account) => {
-				console.log('Account', account);
+				console.log(account);
 			})
 			.catch((error) => {
 				const { code } = error;
@@ -36,7 +37,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 				}
 				return Alert.alert('Login', 'Erro ao realizar login.');
 			})
-			.finnaly(() => setIsLogging(false));
+			.finally(() => setIsLogging(false));
 	}
 
 	return (
