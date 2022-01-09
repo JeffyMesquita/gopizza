@@ -1,6 +1,8 @@
 /* eslint-disable import/no-unresolved */
 import React from 'react';
 import AppLoading from 'expo-app-loading';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 import { StatusBar } from 'expo-status-bar';
 import { useFonts, DMSans_400Regular } from '@expo-google-fonts/dm-sans';
 import { DMSerifDisplay_400Regular } from '@expo-google-fonts/dm-serif-display';
@@ -23,12 +25,13 @@ export default function App() {
 	}
 
 	return (
-		<ThemeProvider theme={theme}>
-			<StatusBar style="light" translucent backgroundColor="transparent" />
-
-			<AuthProvider>
-				<SignIn />
-			</AuthProvider>
-		</ThemeProvider>
+		<GestureHandlerRootView>
+			<ThemeProvider theme={theme}>
+				<StatusBar style="light" translucent backgroundColor="transparent" />
+				<AuthProvider>
+					<SignIn />
+				</AuthProvider>
+			</ThemeProvider>
+		</GestureHandlerRootView>
 	);
 }
