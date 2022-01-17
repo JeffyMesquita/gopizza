@@ -25,13 +25,11 @@ export default function App() {
 	}
 
 	return (
-		<GestureHandlerRootView>
-			<ThemeProvider theme={theme}>
-				<StatusBar style="light" translucent backgroundColor="transparent" />
-				<AuthProvider>
-					<SignIn />
-				</AuthProvider>
-			</ThemeProvider>
-		</GestureHandlerRootView>
+		<ThemeProvider theme={theme}>
+			<StatusBar style="light" translucent backgroundColor="transparent" />
+			<AuthProvider>
+				<SignIn />
+			</AuthProvider>
+		</ThemeProvider>
 	);
 }

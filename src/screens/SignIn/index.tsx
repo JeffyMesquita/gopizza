@@ -1,6 +1,7 @@
 /* eslint-disable import/no-unresolved */
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import brandImg from '@assets/brand.png';
 
@@ -56,12 +57,14 @@ export function SignIn() {
 						<ForgotPasswordLabel>Esqueci minha senha</ForgotPasswordLabel>
 					</ForgotPasswordButton>
 
-					<Button
-						title="Entrar"
-						type="secondary"
-						onPress={() => handleSignIn()}
-						isLoading={isLogging}
-					/>
+					<GestureHandlerRootView>
+						<Button
+							title="Entrar"
+							type="secondary"
+							onPress={() => handleSignIn()}
+							isLoading={isLogging}
+						/>
+					</GestureHandlerRootView>
 				</Content>
 			</KeyboardAvoidingView>
 		</Container>
