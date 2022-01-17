@@ -1,7 +1,14 @@
-import React, { createContext, useContext, ReactNode, useState } from 'react';
+import React, {
+	createContext,
+	useContext,
+	ReactNode,
+	useState,
+	useEffect,
+} from 'react';
 import { Alert } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type User = {
 	id: string;
@@ -11,6 +18,8 @@ type User = {
 
 type AuthContextData = {
 	signIn: (email: string, password: string) => Promise<void>;
+	signOut: () => Promise<void>;
+	forgotPassword: (email: string) => Promise<void>;
 	isLogging: boolean;
 	user: User | null;
 };
@@ -19,11 +28,13 @@ type AuthProviderProps = {
 	children: ReactNode;
 };
 
+const USER_COLLECTION = '@gopizza:user';
+
 export const AuthContext = createContext({} as AuthContextData);
 
 function AuthProvider({ children }: AuthProviderProps) {
-	const [isLogging, setIsLogging] = useState(false);
 	const [user, setUser] = useState<User | null>(null);
+	const [isLogging, setIsLogging] = useState(false);
 
 	async function signIn(email: string, password: string) {
 		if (!email || !password) {
@@ -39,7 +50,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 					.collection('users')
 					.doc(account.user.uid)
 					.get()
-					.then((profile) => {
+					.then(async (profile) => {
 						const { name, isAdmin } = profile.data() as User;
 
 						if (profile.exists) {
@@ -49,7 +60,10 @@ function AuthProvider({ children }: AuthProviderProps) {
 								isAdmin,
 							};
 
-							console.log(userData);
+							await AsyncStorage.setItem(
+								USER_COLLECTION,
+								JSON.stringify(userData)
+							);
 							setUser(userData);
 						}
 					})
@@ -72,12 +86,59 @@ function AuthProvider({ children }: AuthProviderProps) {
 			.finally(() => setIsLogging(false));
 	}
 
+	async function loadUserStorageData() {
+		setIsLogging(true);
+
+		const storedUser = await AsyncStorage.getItem(USER_COLLECTION);
+
+		if (storedUser) {
+			const userData = JSON.parse(storedUser) as User;
+
+			setUser(userData);
+		}
+
+		setIsLogging(false);
+	}
+
+	async function signOut() {
+		await auth().signOut();
+		await AsyncStorage.removeItem(USER_COLLECTION);
+		setUser(null);
+	}
+
+	async function forgotPassword(email: string) {
+		if (!email) {
+			return Alert.alert('Redefinir Senha', 'Informe o email para continuar.');
+		}
+
+		auth()
+			.sendPasswordResetEmail(email)
+			.then(() => {
+				Alert.alert(
+					'Redefinir Senha',
+					'Enviamos um link no seu e-mail para redefinir sua senha. Verifique sua caixa de entrada.'
+				);
+			})
+			.catch(() => {
+				Alert.alert(
+					'Redefinir Senha',
+					'Ocorreu um erro ao tentar enviar o link para redefinir sua senha. Verifique se o e-mail informado está correto.'
+				);
+			});
+	}
+
+	useEffect(() => {
+		loadUserStorageData();
+	}, []);
+
 	return (
 		<AuthContext.Provider
 			value={{
-				signIn,
-				isLogging,
 				user,
+				isLogging,
+				signIn,
+				signOut,
+				forgotPassword,
 			}}
 		>
 			{children}
