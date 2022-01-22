@@ -7,10 +7,9 @@ import { StatusBar } from 'expo-status-bar';
 import { useFonts, DMSans_400Regular } from '@expo-google-fonts/dm-sans';
 import { DMSerifDisplay_400Regular } from '@expo-google-fonts/dm-serif-display';
 import { ThemeProvider } from 'styled-components/native';
-
-import { Home } from '@screens/Home';
-
 import { AuthProvider } from './src/hooks/auth';
+
+import { Routes } from './src/routes';
 
 import theme from './src/theme';
 
@@ -28,7 +27,7 @@ export default function App() {
 		<ThemeProvider theme={theme}>
 			<StatusBar style="light" translucent backgroundColor="transparent" />
 			<AuthProvider>
-				<Home />
+				<Routes />
 			</AuthProvider>
 		</ThemeProvider>
 	);
